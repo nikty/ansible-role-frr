@@ -1,0 +1,16 @@
+- hosts: all
+  become: yes
+  vars:
+    frr_upstream_packages: yes
+    frr:
+      daemons:
+        staticd:
+          enabled: yes
+      routes:
+        - destination: 1.1.1.1/32
+          gateway: 192.0.2.1
+        - destination: 2.2.2.2/32
+          gateway: blackhole
+  tasks:
+    - include_role:
+        name: ansible-role-frr

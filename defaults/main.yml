@@ -1,2 +1,78 @@
 ---
-frr: []
+frr_defaults:
+  install_package: yes
+  daemons:
+    zebra:
+      enabled: no
+      options: " -s 90000000 --daemon -A 127.0.0.1"
+    bgpd:
+      enabled: no
+      options: "   --daemon -A 127.0.0.1"
+    ospfd:
+      enabled: no
+      options: "  --daemon -A 127.0.0.1"
+    ospf6d:
+      enabled: no
+      options: " --daemon -A ::1"
+    ripd:
+      enabled: no
+      options: "   --daemon -A 127.0.0.1"
+    ripngd:
+      enabled: no
+      options: " --daemon -A ::1"
+    isisd:
+      enabled: no
+      options: "  --daemon -A 127.0.0.1"
+    pimd:
+      enabled: no
+      options: "  --daemon -A 127.0.0.1"
+    ldpd:
+      enabled: no
+      options: "  --daemon -A 127.0.0.1"
+    nhrpd:
+      enabled: no
+      options: "  --daemon -A 127.0.0.1"
+    eigrpd:
+      enabled: no
+      options: "  --daemon -A 127.0.0.1"
+    babeld:
+      enabled: no
+      options: "  --daemon -A 127.0.0.1"
+    sharpd:
+      enabled: no
+      options: "  --daemon -A 127.0.0.1"
+    staticd:
+      enabled: no
+      options: "  --daemon -A 127.0.0.1"
+    pbrd:
+      enabled: no
+      options: "  --daemon -A 127.0.0.1"
+    bfdd:
+      enabled: no
+      options: "  --daemon -A 127.0.0.1"
+    fabricd:
+      enabled: no
+      options: "  --daemon -A 127.0.0.1"
+  vtysh:
+      enabled: yes
+      integrated_config: yes
+  vtysh_options: {}
+  init_options: {}
+  settings:
+    # hostname: 
+  vty: {}
+  routes: {}
+  vrrp: {}
+  interfaces: {}
+  router:
+    ospf: {}
+    bgp: {}
+    bgp_as_path_access_list: {}
+    route_map: {}
+    access_list: {}
+    prefix_list: {}
+
+frr_restart: true
+        
+
+frr_upstream_packages: false

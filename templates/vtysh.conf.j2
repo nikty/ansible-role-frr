@@ -1,0 +1,9 @@
+# {{ ansible_managed }}
+
+{% if frr.vtysh.integrated_config is defined %}
+{%  if frr.vtysh.integrated_config %}
+service integrated-vtysh-config
+{%  else %}
+no service integrated-vtysh-config
+{%  endif %}
+{% endif %}

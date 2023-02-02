@@ -4,13 +4,8 @@
 - ansible.builtin.include_tasks:
     file: "packages.yml"
   when:
-    - "hostvars[inventory_hostname]['frr'] is defined"
-    - "hostvars[inventory_hostname]['frr'] != ''"
-    - "hostvars[inventory_hostname]['frr'] |
-       community.general.json_query(vars['frr_install_package']) is defined"
-    - "hostvars[inventory_hostname]['frr'] |
-       community.general.json_query(vars['frr_install_package']) == 'true'"
-  vars:
-    frr_install_package: "[] | map(&install_package || 'false', @) | [0]"
+    - frr is defined
+    - frr != ''
+    - frr.install_package
 - ansible.builtin.import_tasks:
     file: "deploy_frr.yml"

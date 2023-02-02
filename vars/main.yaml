@@ -1,0 +1,11 @@
+# mkdir /etc/apt/keyrings/
+# wget -O - "https://deb.frrouting.org/frr/keys.asc" | gpg --dearmor -o /etc/apt/keyrings/frr.gpg
+# echo 'deb [signed-by=/etc/apt/keyrings/frr.gpg] https://deb.frrouting.org/frr buster frr-stable' > /etc/apt/sources.list.d/frr.list
+# sed -i '/^router bgp .*/a \ no bgp ebgp-requires-policy' /etc/frr/frr.conf /etc/frr/bgpd.conf
+# apt update
+# apt install frr
+
+frr_upstream_repo_key_url: https://deb.frrouting.org/frr/keys.asc
+frr_upstream_repo_deb: https://deb.frrouting.org/frr
+frr_upstream_version: frr-stable
+  

@@ -1,7 +1,15 @@
 ---
 - name: Converge
   hosts: all
+  become: yes
+  vars:
+    frr_use_upstream_packages: True
+    
   tasks:
+
+    - debug:
+        var: frr
+        
     - name: "Include ansible-role-frr"
       include_role:
         name: "ansible-role-frr"

@@ -1,8 +1,10 @@
 ---
 galaxy_info:
+  role_name: frr
+  namespace: nikty
   author: "Konstantin Shalygin <k0ste@k0ste.ru>"
   issue_tracker_url: "https://github.com/k0ste/ansible-role-frr"
-  description: "Role for deploy Free Range Routing Software configuration"
+  description: "Role to deploy Free Range Routing Software configuration"
   company: "YASB"
   license: "GPL"
   min_ansible_version: "3.0.0"
@@ -13,6 +15,9 @@ galaxy_info:
     - name: RedHat
       versions:
         - any
+    - name: Debian
+      versions:
+        - buster
   categories:
     - system
     - networking

@@ -17,6 +17,7 @@
       - "hostvars[inventory_hostname]['ansible_pkg_mgr'] == 'dnf'"
   when:
     - "hostvars[inventory_hostname]['ansible_os_family'] == 'RedHat'"
+
 - name: frr | Install the required packages in Debian derivatives
   ansible.builtin.apt:
     name: "{{ hostvars[inventory_hostname]['frr_package'] }}"
@@ -24,10 +25,40 @@
     update_cache: "yes"
   when:
     - "hostvars[inventory_hostname]['ansible_os_family'] == 'Debian'"
-- name: frr | Install the required packages in ArchLinux derivatives
-  community.general.pacman:
-    name: "{{ hostvars[inventory_hostname]['frr_package'] }}"
-    state: "present"
-    update_cache: "yes"
+    - not frr_upstream_packages | bool
+
+- name: Install FRR from upstream packages on Debian
+  block:
+    - package:
+        name: gpg
+        
+    - name: Make keyrings dir
+      file:
+        path: /etc/apt/keyrings/
+        state: directory
+
+    - name: Download PGP repo key
+      shell:
+        cmd: |
+          wget -O - "{{ frr_upstream_repo_key_url }}" | gpg --dearmor --yes -o /etc/apt/keyrings/frr.gpg
+          echo 'deb [signed-by=/etc/apt/keyrings/frr.gpg] {{ frr_upstream_repo_deb }} {{ ansible_distribution_release }} {{ frr_upstream_version }}' > /etc/apt/sources.list.d/frr.list
+
+    - name: Install FRR
+      apt:
+        update_cache: yes
+        name:
+          - frr
+          - frr-pythontools
+        state: latest
+        
   when:
-    - "hostvars[inventory_hostname]['ansible_os_family'] == 'Archlinux'"
+    - ansible_os_family == "Debian"
+    - frr_upstream_packages | bool
+    
+# - name: frr | Install the required packages in ArchLinux derivatives
+#   community.general.pacman:
+#     name: "{{ hostvars[inventory_hostname]['frr_package'] }}"
+#     state: "present"
+#     update_cache: "yes"
+#   when:
+#     - "hostvars[inventory_hostname]['ansible_os_family'] == 'Archlinux'"

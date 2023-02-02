@@ -1,27 +1,45 @@
-{% for r in hostvars[inventory_hostname]['frr_router_bgp_settings'] %}
-{% if r.as_num is defined and r.as_num != '' %}
-{{ 'router bgp ' ~ r.as_num }}
-{% if r.router_id is defined and r.router_id |
-  ansible.utils.ipaddr('host') %}
-{{ ' bgp router-id ' + r.router_id }}
-{% endif %}
-{% if r.bgp_graceful_restart is defined and r.bgp_graceful_restart == 'true' %}
-{{ ' bgp graceful-restart' }}
-{% endif %}
-{% if r.neighbors is defined and r.neighbors != '' %}
-{% for n in r.neighbors %}
-{% if n.neighbor is defined and n.neighbor |
-  ansible.utils.ipaddr('host') %}
-{% include 'frr_bgp_neighbor.j2' %}
-{% endif %}
+{% for s in frr.router.bgp %}
+{%  if s.asn is defined and s.asn is not none %}
+router bgp {{ s.asn }}{% if s.vrf is defined %} vrf {{ s.vrf }}{% endif +%}
+{%  endif %}
+{%  if s.router_id is defined %}
+  bgp router-id {{ s.router_id }}
+{%  endif %}
+{%  if s.default_ipv4_unicast is defined %}
+{%    if s.default_ipv4_unicast %}
+  bgp default ipv4-unicast
+{%    else %}
+  no bgp default ipv4-unicast
+{%    endif %}
+{%  endif %}
+{%  if s.ebgp_requires_policy is defined %}
+{%    if s.ebgp_requires_policy %}
+  bgp ebgp-requires-policy
+{%    else %}
+  no bgp ebgp-requires-policy
+{%    endif %}
+{%  endif %}
+
+{%  for n in s.neighbors | default([]) %} 
+{%    include 'frr_bgp_neighbor.j2' %} 
+{%  endfor %} 
+
+{%  if s.address_family_ipv4_unicast is defined %}
+{%    set af = s.address_family_ipv4_unicast %}
+{%    include 'frr_bgp_address_family_ipv4_unicast.j2' %} 
+{%  endif %} 
+{%  if s.address_family_ipv6_unicast is defined %}
+{%    set af = s.address_family_ipv6_unicast %}
+{%    include 'frr_bgp_address_family_ipv6_unicast.j2' %} 
+{%  endif %} 
+
+
 {% endfor %}
-{% endif %}
-{% endif %}
-{% if r.address_family_ipv4_unicast is defined and
-  r.address_family_ipv4_unicast != '' %}
-{% for ipv4u in r.address_family_ipv4_unicast %}
-{% include 'frr_bgp_address_family_ipv4_unicast.j2' %}
-{% endfor %}
-{% endif %}
-{{ '\nexit\n!' }}
-{% endfor %}
+
+
+{# {% if s.bgp_graceful_restart is defined and r.bgp_graceful_restart == 'true' %}  #}
+{# {{ ' bgp graceful-restart' }}  #}
+{# {% endif %}  #}
+
+{# {{ '\nexit\n!' }} #}
+{# {% endfor %} #}

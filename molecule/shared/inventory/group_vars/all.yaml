@@ -1,0 +1,80 @@
+# frr_upstream_packages: true
+# frr:
+#   install_package: 'true'
+#   daemons:
+#     bgpd:
+#       enabled: yes
+#   settings:
+#     hostname: R1
+#   router:
+#     bgp:
+#       - asn: 64512
+#         router_id: 192.0.2.1
+#         ebgp_requires_policy: no
+#         default_ipv4_unicast: no
+#         neighbors:
+#           - neighbor: 192.168.1.1
+#             remote_as: 64514
+#             description: neighbor 1
+#             activate: true
+              
+#           - neighbor: 2001:db8::1
+#             remote_as: 64515
+#             description: neighbor 2
+            
+#         address_family_ipv4_unicast:
+#           neighbors:
+#             - neighbor: 192.168.1.1
+#               activate: true
+#               route_map:
+#                 - name: rm-foo-in
+#                   direct: in
+#                 - name: rm-foo-out
+#                   direct: out
+#           networks:
+#             - 1.1.1.1/32
+#             - 2.2.2.2/32
+#         address_family_ipv6_unicast:
+#           neighbors:
+#             - neighbor: 2001:db8::1
+#               activate: yes
+#               route_map:
+#                 - name: rm-foo-ipv6-in
+#                   direct: in
+                
+            
+            
+#       - asn: 64513
+#         vrf: foo
+#   prefix_list:
+#     - name: foo
+#       family: ipv4
+#       description: dummy prefix
+#       rules:
+#         - seq: 100
+#           permit: true
+#           address: 192.0.2.0/24
+#         - permit: true
+#           address: 10.0.0.0/24
+#     - name: foo
+#       family: ipv6
+#       description: dummy ipv6 prefix
+#       rules:
+#         - permit: false
+#           address: any
+#   route_maps:
+#     - name: rm-example
+#       entries:
+#         - policy: permit
+#           seq: 10
+#           actions:
+#             - 'match ip address prefix-list foo'
+#         - policy: deny
+#           seq: 20
+#     - name: rm-example-2
+#       entries:
+#         - policy: deny
+#           seq: 10
+          
+    
+            

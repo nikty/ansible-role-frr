@@ -1,14 +1,13 @@
-{% for p in vars['frr_router_prefix_lists'] %}
-{% if p.name is defined and p.name != '' %}
-{% if p.description is defined and p.description != '' %}
-{{ 'ip prefix-list ' + p.name + ' description ' + p.description }}
-{% endif %}
-{% if p.rules is defined and p.rules != '' %}
-{% for list in p.rules %}
-{{ 'ip prefix-list ' ~ p.name ~ ' ' ~ 'seq ' ~ (loop.index * 5) ~ ' ' ~ list }}
-{% endfor %}
-{% endif %}
-{% endif %}
+{% for p in frr.prefix_lists %}
+{% set cmd_prefix = 'ip' if p.family | default('ipv4') in ['ip', 'ipv4'] else 'ipv6' %}
+{%   if p.name is defined and p.name != '' %}
+{%     if p.description is defined and p.description != '' %}
+{{ cmd_prefix }} prefix-list {{ p.name }} description {{ p.description }}
+{%     endif %}
+{%     for rule in p.rules | default([]) %}
+{{ cmd_prefix }} prefix-list {{ p.name }} {% if rule.seq is defined %} seq {{ rule.seq }} {% endif %}{{ rule.permit | ternary('permit', 'deny') }} {{ rule.address }}
+{%     endfor %}
+{%   endif %}
 {% if loop.last %}
 {{ '!' }}
 {% endif %}

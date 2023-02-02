@@ -1,5 +1,5 @@
   !
-  address-family ipv4 unicast
+  address-family ipv6 unicast
 {% if af.networks is defined %}
 {%  for net in af.networks %} 
 {%    if net is defined %} 
@@ -9,6 +9,13 @@
 {% endif %} 
 {% if af.neighbors is defined %} 
 {%   for n in af.neighbors %}
+{%     if n.activate is defined %}
+{%       if n.activate %}
+    neighbor {{ n.neighbor }} activate
+{%       else %}
+    no neighbor {{ n.neighbor }} activate
+{%       endif %}
+{%     endif %}
 {%     for rm in n.route_map | default([]) %} 
     neighbor {{ n.neighbor }} route-map {{ rm.name }} {{ rm.direct }}
 {%     endfor %}
