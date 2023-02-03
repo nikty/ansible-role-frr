@@ -3,13 +3,13 @@
   hosts: all
   become: yes
   vars:
-    frr_use_upstream_packages: True
+    frr_upstream_packages: True
     
   tasks:
 
     - debug:
         var: frr
         
-    - name: "Include ansible-role-frr"
+    - name: "Include frr"
       include_role:
-        name: "ansible-role-frr"
+        name: "frr"

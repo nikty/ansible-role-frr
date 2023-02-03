@@ -13,4 +13,4 @@
           gateway: blackhole
   tasks:
     - include_role:
-        name: ansible-role-frr
+        name: frr

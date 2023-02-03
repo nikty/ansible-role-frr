@@ -5,7 +5,27 @@
 # apt update
 # apt install frr
 
+# Debian apt keyring directory
+frr_apt_keyring_dir: /etc/apt/keyrings
+frr_apt_key_name: frr.gpg
+
+# Upstream URLs
 frr_upstream_repo_key_url: https://deb.frrouting.org/frr/keys.asc
 frr_upstream_repo_deb: https://deb.frrouting.org/frr
+
+# Default upstream version
 frr_upstream_version: frr-stable
-  
+
+# Upstream package names
+frr_upstream_packages:
+  - frr
+  - frr-pythontools
+
+_frr_packages:
+  default:
+    - frr
+
+frr_packages: "{{ _frr_packages[ ansible_os_family ] | default( _frr_packages['default'] ) }}"
+
+# Whether to install FRR from upstream packages
+frr_upstream_install: true

@@ -1,4 +1,9 @@
 ---
+- name: Update APT cache
+  apt:
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+  
 - name: frr | Install the required packages in Redhat derivatives
   block:
   - name: frr | Install the required packages for RedHat via yum
@@ -25,7 +30,7 @@
     update_cache: "yes"
   when:
     - "hostvars[inventory_hostname]['ansible_os_family'] == 'Debian'"
-    - not frr_upstream_packages | bool
+    - not frr_upstream_install | bool
 
 - name: Install FRR from upstream packages on Debian
   block:
@@ -41,19 +46,25 @@
       shell:
         cmd: |
           wget -O - "{{ frr_upstream_repo_key_url }}" | gpg --dearmor --yes -o /etc/apt/keyrings/frr.gpg
-          echo 'deb [signed-by=/etc/apt/keyrings/frr.gpg] {{ frr_upstream_repo_deb }} {{ ansible_distribution_release }} {{ frr_upstream_version }}' > /etc/apt/sources.list.d/frr.list
+          # echo 'deb [signed-by=/etc/apt/keyrings/frr.gpg] {{ frr_upstream_repo_deb }} {{ ansible_distribution_release }} {{ frr_upstream_version }}' > /etc/apt/sources.list.d/frr.list
+        creates: /etc/apt/keyrings/frr.gpg
+
+    - name: Add repository
+      apt_repository:
+        repo: "deb [signed-by={{ frr_apt_keyring_dir }}/{{ frr_apt_key_name }}] {{ frr_upstream_repo_deb }} {{ ansible_distribution_release }} {{ frr_upstream_version }}"
+        state: present
+        filename: frr
+
 
     - name: Install FRR
       apt:
         update_cache: yes
-        name:
-          - frr
-          - frr-pythontools
+        name: "{{ frr_upstream_packages }}"
         state: latest
         
   when:
     - ansible_os_family == "Debian"
-    - frr_upstream_packages | bool
+    - frr_upstream_install | bool
     
 # - name: frr | Install the required packages in ArchLinux derivatives
 #   community.general.pacman:

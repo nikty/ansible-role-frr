@@ -72,7 +72,7 @@ frr_defaults:
     access_list: {}
     prefix_list: {}
 
+frr: {}
 frr_restart: true
         
 
-frr_upstream_packages: false
