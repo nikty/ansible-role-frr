@@ -5,10 +5,11 @@
 {{ cmd_prefix }} prefix-list {{ p.name }} description {{ p.description }}
 {%     endif %}
 {%     for rule in p.rules | default([]) %}
-{{ cmd_prefix }} prefix-list {{ p.name }} {% if rule.seq is defined %} seq {{ rule.seq }} {% endif %}{{ rule.permit | ternary('permit', 'deny') }} {{ rule.address }}
+{{ cmd_prefix }} prefix-list {{ p.name }} {% if rule.seq is defined %} seq {{ rule.seq }} {% endif %}
+{{- rule.permit | ternary('permit', 'deny') }}
+{{- ' ' ~ rule.prefix }}
+{%-      if rule.le is defined %} le {{ rule.le }}{% endif +%}
+{%-      if rule.ge is defined %} ge {{ rule.ge }}{% endif +%}
 {%     endfor %}
 {%   endif %}
-{% if loop.last %}
-{{ '!' }}
-{% endif %}
 {% endfor %}

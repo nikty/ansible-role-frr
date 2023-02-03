@@ -1,0 +1,3 @@
+{% for el in af.redistribute %}
+    redistribute {{ el.type }}{% if el.metric is defined %} metric {{ el.metric }}{% endif %}{% if el.route_map is defined %} route-map {{ el.route_map }}{% endif +%}
+{% endfor %}

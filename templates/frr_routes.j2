@@ -1,13 +1,12 @@
 {% for r in frr.routes | default([]) %}
 {%   if (r.destination is defined and r.destination != '') and
   (r.gateway is defined and r.gateway != '') %}
-ip route {{ r.destination }} {{ r.gateway -}}
-{%     if r.interface is defined and r.interface != '' %}
-{{ ' ' ~ r.interface -}}
-{%     endif %}
-{%     if r.distance is defined %}
-{{ ' ' ~ r.distance }}
-{%     endif %}
-{%   endif %}
-
+ip route {{ r.destination }} {{ r.gateway }}
+{%-    if r.interface is defined and r.interface != '' %}
+{{- ' ' ~ r.interface }}
+{%-     endif %}
+{%-    if r.distance is defined %}
+{{- ' ' ~ r.distance }}
+{%-    endif %}
+{%-   endif +%}
 {% endfor %}

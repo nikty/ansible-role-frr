@@ -1,21 +1,29 @@
-  !
   address-family ipv4 unicast
 {% if af.networks is defined %}
-{%  for net in af.networks %} 
-{%    if net is defined %} 
-    network {{ net }} 
-{%    endif %} 
-{%  endfor %} 
-{% endif %} 
-{% if af.neighbors is defined %} 
+{%  for net in af.networks %}
+{%    if net is defined %}
+    network {{ net }}
+{%    endif %}
+{%  endfor %}
+{% endif %}
+{% if af.neighbors is defined %}
 {%   for n in af.neighbors %}
-{%     for rm in n.route_map | default([]) %} 
+{%     if n.activate is defined %}
+{%       if n.activate %}
+    neighbor {{ n.neighbor }} activate
+{%       else %}
+    no neighbor {{ n.neighbor }} activate
+{%       endif %}
+{%     endif %}
+{%     for rm in n.route_map | default([]) %}
     neighbor {{ n.neighbor }} route-map {{ rm.name }} {{ rm.direct }}
 {%     endfor %}
 {%   endfor %}
 {% endif %}
+{% if af.redistribute is defined %}
+{%   include 'frr_bgp_address_family_redistribute.j2' %}
+{% endif %}
   exit-address-family
-
 {# {% if af.neighbors is defined and ipv4u.neighbors != '' %}  #}
 {# {% for n in af.neighbors %} #}
 {# {% if nipv4.neighbor is defined and nipv4.neighbor | #}

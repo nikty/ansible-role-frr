@@ -1,19 +1,31 @@
 # {{ ansible_managed }}
+
 {% if frr.settings is defined %}
 {%  include 'frr_settings.j2' %}
-{% endif %} 
+{% endif %}
 {% if frr.router.bgp is defined %}
-{%  include 'frr_bgp_settings.j2' %} 
+!
+{%  set config = frr.router.bgp %}
+{%  include 'frr_bgp_settings.j2' %}
 {% endif %}
 {% if frr.prefix_lists is defined %}
-{%   include 'frr_prefix_list.j2' %} 
+!
+{%   include 'frr_prefix_list.j2' %}
 {% endif %}
 {% if frr.route_maps is defined %}
-{%   include 'frr_route_map.j2' %} 
-{% endif %} 
-{% if frr.routes is defined %} 
-{%   include 'frr_routes.j2' %} 
-{% endif %} 
+{%   for rm in frr.route_maps %}
+{%     include 'frr_route_map.j2' %}
+{%   endfor %}
+{% endif %}
+{% if frr.routes is defined %}
+!
+{%   include 'frr_routes.j2' %}
+{% endif %}
+{% if frr.bgp_as_path_access_lists is defined %}
+!
+{%   set config = frr.bgp_as_path_access_lists %}
+{%   include 'frr_bgp_as_path_access_lists.j2' %}
+{% endif %}
 {# {% if vars['frr_interfaces'] is defined and vars['frr_interfaces'] != [] %} #}
 {# {% include 'frr_interfaces.j2' %} #}
 {# {% endif %} #}
@@ -27,10 +39,6 @@
 {# {% if vars['frr_router_access_lists'] is defined and #}
 {#       vars['frr_router_access_lists'] != [] %} #}
 {# {% include 'frr_access_lists.j2' %} #}
-{# {% endif %} #}
-{# {% if vars['frr_router_bgp_access_lists'] is defined and #}
-{#       vars['frr_router_bgp_access_lists'] != [] %} #}
-{# {% include 'frr_bgp_access_lists.j2' %} #}
 {# {% endif %} #}
 {# {% if vars['frr_vty_settings'] is defined and vars['frr_vty_settings'] != [] %} #}
 {# {% include 'frr_vty.j2' %} #}

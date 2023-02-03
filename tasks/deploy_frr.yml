@@ -34,9 +34,4 @@
   when:
     - frr is defined
     - frr != ''
-  #   - "hostvars[inventory_hostname]['frr'] |
-  #      community.general.json_query(vars['frr_enable']) is defined"
-  #   - "hostvars[inventory_hostname]['frr'] |
-  #      community.general.json_query(vars['frr_enable']) == 'true'"
-  # vars:
-  #   frr_enable: "[] | map(&enable || 'false', @) | [0]"
+    - frr_enable | bool

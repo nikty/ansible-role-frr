@@ -480,3 +480,117 @@ frr:
         - 'permit 193.150.124.0/24'
         - 'deny any'
 ```
+
+## Example configuration (refactor)
+
+```yaml
+---
+frr_enable: yes
+frr_restart: yes
+frr_install: yes
+frr:
+  daemons:
+    # daemons configuration; see defaults/main.yml for defaults
+    bgpd:
+      enabled: yes
+      options: " -s 90000000 --daemon -A 127.0.0.1"
+    staticd:
+      enabled: yes
+  vtysh:
+    integrated_config: yes
+  settings:
+    hostname: R1
+    log_syslog: 'informational'
+  routes:
+    - destination: '100.100.100.0/24'
+      gateway: '100.100.100.1'
+      distance: '2'
+      interface: 'eth0'
+    - destination: '0.0.0.0/0'
+      gateway: '5.128.220.1'
+      distance: '2'
+  router:
+    bgp:
+      - asn: '198181'
+        router_id: '100.100.100.1'
+	ebgp_requires_policy: true
+	default_ipv4_unicast: true
+        neighbors:
+        - neighbor: '212.17.15.169'
+          remote_as: '25549'
+          description: 'avantel'
+        - neighbor: '95.156.85.193'
+          remote_as: '12389'
+          description: 'rostelecom'
+        address_family_ipv4_unicast:
+	  redistribute:
+	    - type: connected
+	    - type: static
+	      metric: 10
+	      route_map: foo
+          networks:
+            - '193.150.124.0/24'
+            - '193.150.125.0/24'
+          neighbors:
+            - neighbor: '212.17.15.169'
+              route_map:
+                - name: 'opentech_avantel_in'
+		  direct: in
+                - name: 'opentech_avantel_out'
+		  direct: out
+            - neighbor: '95.156.85.193'
+              route_map:
+                - name: 'opentech_rostelecom_in'
+		  direct: in
+                - name: 'opentech_rostelecom_out'
+		  direct: out
+    route_maps:
+      - name: 'DISTRIBUTE_TO_OSPF'
+        entries:
+        - policy: permit
+	  seq: 10
+          actions:
+            - 'match ip address prefix-list opentech_ospf'
+        - policy: deny
+	  seq: 100
+      - name: 'TO_OSPF_NTK'
+        entries:
+          - policy: permit
+	    seq: 10
+	    actions:
+              - 'match ip address prefix-list EXAMPLE_PREFIX_LIST'
+              - 'match ip next-hop prefix-list i_give_up'
+          - policy: permit
+	    seq: 11
+            actions:
+              - 'match ip address prefix-list FROM_TO'
+          - policy: deny
+	    seq: 100
+    prefix_lists:
+      - name: 'EXAMPLE_PREFIX_LIST'
+        rules:
+          - permit: yes
+	    prefix: 192.168.0.0/16
+	    le: 32
+          - permit: not
+	    prefix: any
+      - name: 'no_default_originate'
+        rules:
+          - permit: no
+	    prefix: 0.0.0.0/0
+          - permit: yes
+	    prefix: 0.0.0.0/0
+	    le: 32
+    bgp_as_path_access_list:
+      - name: 99
+        rules:
+	  - permit: yes
+	    line: _0_
+	  - permit: yes
+	    line: _23456_
+	  - permit: yes
+	    line: '_1310[0-6][0-9]_|_13107[0-1]_'
+	  - permit: yes
+	    line: '^65'
+	    seq: 20
+```

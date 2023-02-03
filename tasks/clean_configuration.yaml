@@ -1,0 +1,16 @@
+# Clean daemon files if integrated config is enabled
+- file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    "{{ [ frr_conf_dest ] | product(frr.daemons.keys()) | map('join', '/') | list | product([ '.conf' ]) | map('join', '') | list }}"
+  when: >-
+    frr.vtysh.integrated_config is defined
+    and frr.vtysh.integrated_config
+
+- file:
+    path: "{{ frr_conf_dest }}/frr.conf"
+    state: absent
+  when: >-
+    frr.vtysh.integrated_config is defined
+    and not frr.vtysh.integrated_config

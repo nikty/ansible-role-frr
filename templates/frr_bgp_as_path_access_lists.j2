@@ -1,0 +1,12 @@
+{% for el in config %}
+{%   if el.name is defined and el.name != '' %}
+{%     if el.rules is defined %}
+{%       for r in el.rules %}
+bgp as-path access-list {{ el.name }}{% if r.seq is defined %} {{ r.seq }}{% endif %} {{ r.permit | ternary('permit', 'deny') }} {{ r.line }}
+{%       endfor %}
+{%     endif %}
+{%   endif %}
+{# {% if loop.last %} #}
+{# {{ '!' }} #}
+{# {% endif %} #}
+{% endfor %}

@@ -1,6 +1,5 @@
 ---
 frr_defaults:
-  install_package: yes
   daemons:
     zebra:
       enabled: no
@@ -55,24 +54,22 @@ frr_defaults:
       options: "  --daemon -A 127.0.0.1"
   vtysh:
       enabled: yes
-      integrated_config: yes
-  vtysh_options: {}
-  init_options: {}
+      # integrated_config: yes
   settings:
     # hostname: 
-  vty: {}
-  routes: {}
-  vrrp: {}
-  interfaces: {}
-  router:
-    ospf: {}
-    bgp: {}
-    bgp_as_path_access_list: {}
-    route_map: {}
-    access_list: {}
-    prefix_list: {}
 
+# FRR configuration settings
+# These are combined with frr_defaults in `tasks/main.yml`
 frr: {}
-frr_restart: true
-        
 
+# Whether to reload FRR configuration
+frr_restart: yes
+
+# Whether to enable system service
+frr_enable: yes
+
+# Whether to install FRR
+frr_install: yes
+
+# Whether to clean unmanaged configuration
+frr_clean_configuration: yes

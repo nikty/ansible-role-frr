@@ -1,6 +1,6 @@
-{% for rm in frr.route_maps%}
 {%   if (rm.name is defined and rm.name != '') %}
 {%     for e in rm.entries | default([]) %}
+!
 route-map {{ rm.name }} {{ e.policy }} {{ e.seq }}
 {%       for action in e.actions | default([]) %}
   {{ action }}
@@ -8,4 +8,3 @@ route-map {{ rm.name }} {{ e.policy }} {{ e.seq }}
 exit
 {%     endfor %}
 {%   endif %}
-{% endfor %}

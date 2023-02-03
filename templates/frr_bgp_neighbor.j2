@@ -4,7 +4,6 @@
 {% if n.description is defined and n.description != '' %}
   neighbor {{ n.neighbor }} description {{ n.description }}
 {% endif %}
-
 {# {% if n.advertisement_interval is defined and #}
 {#   (n.advertisement_interval > '0' <= '600') %} #}
 {# {{ ' neighbor ' + n.neighbor + ' advertisement-interval ' ~ #}
