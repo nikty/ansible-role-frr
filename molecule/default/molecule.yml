@@ -23,9 +23,9 @@ provisioner:
   name: ansible
   playbooks:
     verify: "${TEST_VERIFY_PLAYBOOK:-verify.yml}"
-  inventory:
-    links:
-      group_vars: ../shared/inventory/group_vars
+  # inventory:
+    # links:
+    #   group_vars: ../shared/inventory/group_vars
     # host_vars:
     #   test-ansible-role-frr:
     #     frr:

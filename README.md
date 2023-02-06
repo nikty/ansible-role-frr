@@ -533,17 +533,18 @@ frr:
             - '193.150.125.0/24'
           neighbors:
             - neighbor: '212.17.15.169'
+	      default_originate:
+	        enabled: yes
+		route_map: 'rm-foo'
               route_map:
-                - name: 'opentech_avantel_in'
-		  direct: in
-                - name: 'opentech_avantel_out'
-		  direct: out
+                in: 'opentech_avantel_in'
+                out: 'opentech_avantel_out'
+              prefix_list:
+                out: 'opentech_bgp_advertise'
             - neighbor: '95.156.85.193'
               route_map:
-                - name: 'opentech_rostelecom_in'
-		  direct: in
-                - name: 'opentech_rostelecom_out'
-		  direct: out
+                in: 'opentech_rostelecom_in'
+                out: 'opentech_rostelecom_out'
     route_maps:
       - name: 'DISTRIBUTE_TO_OSPF'
         entries:

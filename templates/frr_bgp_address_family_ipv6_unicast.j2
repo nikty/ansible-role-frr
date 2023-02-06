@@ -15,9 +15,17 @@
     no neighbor {{ n.neighbor }} activate
 {%       endif %}
 {%     endif %}
-{%     for rm in n.route_map | default([]) %}
-    neighbor {{ n.neighbor }} route-map {{ rm.name }} {{ rm.direct }}
+{%     for direct, name in (n.route_map | default({})).items() %}
+    neighbor {{ n.neighbor }} route-map {{ name }} {{ direct }}
 {%     endfor %}
+{%     for direct, name in (n.prefix_list | default({})).items() %}
+    neighbor {{ n.neighbor }} prefix-list {{ name }} {{ direct }}
+{%     endfor %}
+{%     if n.default_originate is defined %}
+{%       if n.default_originate.enabled | default(False) %}
+    neighbor {{ n.neighbor }} default-originate{% if n.default_originate.route_map is defined %}{{ ' ' ~ n.default_originate.route_map }}{% endif +%}
+{%       endif %}
+{%     endif %}
 {%   endfor %}
 {% endif %}
 {% if af.redistribute is defined %}
@@ -49,26 +57,6 @@
 {# {% endif %} #}
 {# {% if nf.out is defined and nf.out != '' %} #}
 {# {{ '  neighbor ' ~ nipv4.neighbor ~ ' filter-list ' ~ nf.out ~ ' out' }} #}
-{# {% endif %} #}
-{# {% endfor %} #}
-{# {% endif %} #}
-{# {% if nipv4.prefix_list is defined and nipv4.prefix_list != '' %} #}
-{# {% for np in nipv4.prefix_list %} #}
-{# {% if np.in is defined and np.in != '' %} #}
-{# {{ '  neighbor ' ~ nipv4.neighbor ~ ' prefix-list ' ~ np.in ~ ' in' }} #}
-{# {% endif %} #}
-{# {% if np.out is defined and np.out != '' %} #}
-{# {{ '  neighbor ' ~ nipv4.neighbor ~ ' prefix-list ' ~ np.out ~ ' out' }} #}
-{# {% endif %} #}
-{# {% endfor %} #}
-{# {% endif %} #}
-{# {% if nipv4.route_map is defined and nipv4.route_map != '' %} #}
-{# {% for nr in nipv4.route_map %} #}
-{# {% if nr.in is defined and nr.in != '' %} #}
-{# {{ '  neighbor ' ~ nipv4.neighbor ~ ' route-map ' ~ nr.in ~ ' in' }} #}
-{# {% endif %} #}
-{# {% if nr.out is defined and nr.out != '' %} #}
-{# {{ '  neighbor ' ~ nipv4.neighbor ~ ' route-map ' ~ nr.out ~ ' out' }} #}
 {# {% endif %} #}
 {# {% endfor %} #}
 {# {% endif %} #}
