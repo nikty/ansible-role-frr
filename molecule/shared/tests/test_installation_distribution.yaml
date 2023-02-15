@@ -1,0 +1,26 @@
+- hosts: all
+  become: yes
+  tasks:
+
+    - import_role:
+        name: frr
+      vars:
+        frr_upstream_install: no
+
+    - block:
+        - package_facts:
+            manager: apt
+
+        - name: Check if upstream version of FRR is installed
+          assert:
+            that: >-
+              'frr' in ansible_facts.packages
+              and ansible_facts.packages['frr'] | length == 1
+              and ansible_facts.packages['frr'][0]['origin'] == 'Debian'
+
+      when: >-
+        ansible_os_family == "Debian"
+          
+    - name: Test FRR is of correct version
+      meta: noop
+    

@@ -1,7 +1,7 @@
 - hosts: all
   become: yes
   vars:
-    frr_upstream_packages: true
+    frr_upstream_install: true
     frr_enable: yes
     frr:
       install_package: 'true'
@@ -77,5 +77,7 @@
     
             
   tasks:
-    - include_role:
+    
+    - import_role:
         name: frr
+

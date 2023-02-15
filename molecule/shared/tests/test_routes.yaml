@@ -1,7 +1,7 @@
 - hosts: all
   become: yes
   vars:
-    frr_upstream_packages: yes
+    frr_upstream_install: yes
     frr:
       daemons:
         staticd:

@@ -7,25 +7,17 @@
   ansible.builtin.include_vars:
     file: "{{ ansible_os_family }}.yml"
     
-- name: frr | Create frr catalog
-  ansible.builtin.file:
-    path: "{{ frr_conf_dest }}"
-    state: "directory"
-    owner: "root"
-    group: "root"
-    mode: "0750"
-    
-
-- ansible.builtin.include_tasks:
-    file: "packages.yml"
-  when:
-    - frr is defined
-    - frr != ''
-    - frr_install
+- include_tasks: "install.yaml"
+  when: >-
+    frr_install
 
 - name: Clean configuration
   include_tasks: "clean_configuration.yaml"
-  when: frr_clean_configuration
+  when: >-
+    frr_configure
+    and frr_clean_configuration
 
-- ansible.builtin.import_tasks:
-    file: "deploy_frr.yml"
+- name: Configure FRR
+  include_tasks: "configure.yaml"
+  when: >-
+    frr_configure

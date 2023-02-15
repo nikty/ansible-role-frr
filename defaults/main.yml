@@ -71,5 +71,8 @@ frr_enable: yes
 # Whether to install FRR
 frr_install: yes
 
+# Whether to configure frr
+frr_configure: yes
+
 # Whether to clean unmanaged configuration
 frr_clean_configuration: yes

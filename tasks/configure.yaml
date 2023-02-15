@@ -1,5 +1,13 @@
 ---
-- name: frr | Deploy frr daemons
+- name: Create FRR config dir
+  ansible.builtin.file:
+    path: "{{ frr_conf_dest }}"
+    state: "directory"
+    owner: "{{ frr_user }}"
+    group: "{{ frr_group }}"
+    mode: "0750"
+
+- name: Create configuration for daemons
   ansible.builtin.template:
     src: "daemons.j2"
     dest: "{{ frr_conf_dest + '/' + frr_daemons_file }}"
@@ -16,7 +24,7 @@
   notify:
     - Restart frr
   
-- name: frr | Deploy frr configuration
+- name: Template frr.conf
   ansible.builtin.template:
     src: "frr.j2"
     dest: "{{ frr_conf_dest + '/frr.conf' }}"
@@ -27,11 +35,9 @@
   notify:
     - "Restart frr"
 
-- name: frr | Enable frr service
+- name: Enable FRR service
   ansible.builtin.systemd:
     name: "{{ frr_service }}"
     enabled: "yes"
-  when:
-    - frr is defined
-    - frr != ''
-    - frr_enable | bool
+  when: >-
+    frr_enable | bool

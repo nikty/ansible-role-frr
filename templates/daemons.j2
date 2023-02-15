@@ -1,6 +1,4 @@
-{{ '## ' + 'daemons.conf' }}
-{{ '# ' + ansible_managed }}
-{{ '# ' + 'Do not edit manually' }}
+# {{ ansible_managed }}
 
 {% if frr.daemons is defined  %}
 {% for daemon in frr.daemons %}

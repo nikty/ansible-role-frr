@@ -2,14 +2,5 @@
 - name: Converge
   hosts: all
   become: yes
-  vars:
-    frr_upstream_packages: True
-    
   tasks:
-
-    - debug:
-        var: frr
-        
-    - name: "Include frr"
-      include_role:
-        name: "frr"
+    - meta: noop
